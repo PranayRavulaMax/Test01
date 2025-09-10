@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Login (POST)</title>
+  <title>Form POST Example</title>
   <style>
     :root{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;color:#111}
     body{display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f3f4f6}
@@ -11,23 +11,57 @@
     h1{font-size:1.25rem;margin:0 0 12px}
     label{display:block;font-size:0.85rem;margin-bottom:6px}
     input[type=text],input[type=password]{width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:12px;font-size:0.95rem}
-    button{padding:10px 14px;border-radius:10px;border:0;background:#111827;color:#fff;font-weight:600;cursor:pointer;width:100%}
+    .row{display:flex;align-items:center;justify-content:flex-end}
+    input[type=submit]{padding:10px 14px;border-radius:10px;border:0;background:#111827;color:#fff;font-weight:600;cursor:pointer}
+    .message{margin-top:10px;font-size:0.9rem;color:green;font-weight:600}
   </style>
 </head>
 <body>
   <main class="card">
-    <h1>Sign in</h1>
+    <h1>Submit Form</h1>
 
-    <!-- Simple HTML form that submits via POST to /login -->
-    <form action="/login" method="post">
+    <!-- Simple form that posts data -->
+    <form id="postForm" action="/submit" method="post">
       <label for="email">Email</label>
-      <input id="email" name="email" type="text" required placeholder="Enter your email" />
+      <input id="email" name="email" type="text" required placeholder="Enter email" />
 
       <label for="password">Password</label>
-      <input id="password" name="password" type="password" required placeholder="Enter your password" />
+      <input id="password" name="password" type="password" required placeholder="Enter password" />
 
-      <button type="submit">Login</button>
+      <div class="row">
+        <input type="submit" value="Submit" />
+      </div>
     </form>
+
+    <div id="result" class="message" aria-live="polite"></div>
   </main>
+
+  <script>
+    const form = document.getElementById('postForm');
+    const result = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      try {
+        const resp = await fetch(form.action, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (resp.ok) {
+          result.textContent = 'Form submitted successfully!';
+        } else {
+          result.textContent = 'Form submission failed!';
+          result.style.color = 'red';
+        }
+      } catch (err) {
+        console.error(err);
+        result.textContent = 'Error submitting form';
+        result.style.color = 'red';
+      }
+    });
+  </script>
 </body>
 </html>
